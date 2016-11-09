@@ -1,0 +1,79 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class HeightStabiliser : MonoBehaviour {
+
+    public Vector3 applyPositionZ;
+    public Vector3 applyPositionX;
+    public Vector3 setPoint;
+    public float pGain;
+    public float dGain;
+    Vector3 force;
+    Vector3 curPos;
+    Rigidbody rb;
+
+    PDController controller;
+
+    class PDController{
+        Vector3 controllerBias;
+        float controllerPGain;
+        float controllerDGain;
+        Vector3 setPoint;
+        Vector3 processVar;
+        Vector3 prevPV;
+        Vector3 outC;
+        Vector3 outP;
+        Vector3 outD;
+
+        public PDController(Vector3 sp, float kp, float kd, Vector3 cbias, Vector3 ppv){
+            setPoint = sp;
+            controllerPGain = kp;
+            controllerDGain = kd;
+            controllerBias = cbias;
+            prevPV = ppv;
+        }
+
+        Vector3 getError(Vector3 sp, Vector3 pv){
+            return sp-pv;
+        }
+
+        Vector3 getDError(Vector3 prev, Vector3 pv){
+            return prev-pv;
+        }
+
+        public Vector3 updateOutputSignal(Vector3 pv){
+            //Debug.Log("pRrror: " + getError(setPoint,pv));
+            //Debug.Log("dError: " + getDError(prevPV,pv));
+            outP = controllerPGain*getError(setPoint,pv) + controllerBias;
+            outD = controllerDGain*getDError(prevPV,pv);
+            outC = outP + outD;
+            prevPV = pv;
+            return outC;
+        }
+
+    }
+
+    // Use this for initialization
+    void Start () {
+        /* For those with time constraints: */
+        //Time.timeScale=5f;
+        rb = gameObject.transform.root.gameObject.GetComponent<Rigidbody>();
+        transform.position = new Vector3(0f,0.5f,0f);
+        force = new Vector3(0f,9.81f/4,0f);
+
+        controller = new PDController(setPoint,pGain,dGain,force,transform.position);
+        //controller = new PDController(setPoint,gain,new Vector3(0f,0f,0f));
+        controller.updateOutputSignal(transform.position);
+    }
+    
+    // Update is called once per frame
+    void FixedUpdate () {
+        curPos = transform.position;
+        Vector3 f = controller.updateOutputSignal(curPos);
+        Debug.Log("F: " + f);
+        rb.AddForceAtPosition(f, curPos+applyPositionZ, ForceMode.Force); 
+        rb.AddForceAtPosition(f, curPos-applyPositionZ, ForceMode.Force); 
+        rb.AddForceAtPosition(f, curPos+applyPositionX, ForceMode.Force); 
+        rb.AddForceAtPosition(f, curPos-applyPositionX, ForceMode.Force); 
+    }
+}
