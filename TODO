@@ -1,0 +1,7 @@
+- Correct I controller.
+- Correct negative forces.
+- Refactor code so we can have actuator-controller differentation.
+- Pitch/roll stabilitation.
+- Yaw stabilitation.
+- GC gain tune.
+- Fuzzy control?
