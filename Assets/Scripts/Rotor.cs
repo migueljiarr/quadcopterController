@@ -33,7 +33,6 @@ public class Rotor : MonoBehaviour {
         rb.AddForce(force, ForceMode.Force);
         switch(rotorPos){
             case XCWRotor1:
-        maxThrottle = 110;
                 torque = transform.forward * -1 * (maxThrottle * (throttle/100));
                 break;
             case XCWRotor2:
@@ -47,6 +46,5 @@ public class Rotor : MonoBehaviour {
                 break;
         }
         rb.AddForceAtPosition(torque, transform.position, ForceMode.Force);
-        Debug.DrawRay(transform.position, torque, Color.red); 
     }
 }

@@ -252,7 +252,7 @@ GameObject:
   - 23: {fileID: 1003665676}
   - 114: {fileID: 1003665679}
   m_Layer: 0
-  m_Name: XCCWRotor
+  m_Name: XCWRotor2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -318,7 +318,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ee2a6f59d1054d6c990b3d36b5f44fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  force: {x: 0, y: 0, z: 0}
+  rotorPos: 1
+  maxThrottle: 0
+  throttle: 0
 --- !u!1 &1487807481
 GameObject:
   m_ObjectHideFlags: 0
@@ -410,7 +412,7 @@ GameObject:
   - 33: {fileID: 1640925393}
   - 114: {fileID: 1640925396}
   m_Layer: 0
-  m_Name: ZCCWRotor
+  m_Name: ZCCWRotor1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -476,7 +478,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ee2a6f59d1054d6c990b3d36b5f44fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  force: {x: 0, y: 0, z: 0}
+  rotorPos: 3
+  maxThrottle: 0
+  throttle: 0
 --- !u!1 &1877522527
 GameObject:
   m_ObjectHideFlags: 0
@@ -536,13 +540,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   setPoint: {x: 0, y: 3, z: 0}
-  pGain: 20
-  iGain: 0
-  dGain: 30
-  zCWRotor: {fileID: 1919298493}
-  zCCWRotor: {fileID: 1640925392}
-  xCWRotor: {fileID: 1890871665}
-  xCCWRotor: {fileID: 1003665675}
+  pGain: 5
+  iGain: 1
+  dGain: 200
+  zCCWRotor1: {fileID: 1640925392}
+  zCCWRotor2: {fileID: 1919298493}
+  xCWRotor1: {fileID: 1890871665}
+  xCWRotor2: {fileID: 1003665675}
 --- !u!1 &1890871665
 GameObject:
   m_ObjectHideFlags: 0
@@ -555,7 +559,7 @@ GameObject:
   - 23: {fileID: 1890871667}
   - 114: {fileID: 1890871669}
   m_Layer: 0
-  m_Name: XCWRotor
+  m_Name: XCWRotor1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -621,7 +625,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ee2a6f59d1054d6c990b3d36b5f44fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  force: {x: 0, y: 0, z: 0}
+  rotorPos: 0
+  maxThrottle: 0
+  throttle: 0
 --- !u!1 &1919298493
 GameObject:
   m_ObjectHideFlags: 0
@@ -634,7 +640,7 @@ GameObject:
   - 33: {fileID: 1919298495}
   - 114: {fileID: 1919298497}
   m_Layer: 0
-  m_Name: ZCWRotor
+  m_Name: ZCCWRotor2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -700,7 +706,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ee2a6f59d1054d6c990b3d36b5f44fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  force: {x: 0, y: 0, z: 0}
+  rotorPos: 2
+  maxThrottle: 0
+  throttle: 0
 --- !u!1 &2129460540
 GameObject:
   m_ObjectHideFlags: 0
