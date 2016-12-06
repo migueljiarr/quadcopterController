@@ -33,7 +33,7 @@ public class PIDController{
     }
     
     Vector3 getErrAcum(Vector3 err){
-        errorAcumulator=errorAcumulator+err;
+        errorAcumulator=errorAcumulator+err*Time.deltaTime;
         return errorAcumulator;
     }
 

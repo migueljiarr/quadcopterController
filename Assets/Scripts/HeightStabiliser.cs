@@ -8,18 +8,13 @@ public class HeightStabiliser : MonoBehaviour {
     public float iGain;
     public float dGain;
 
-    public GameObject zCWRotor;
-    public GameObject zCCWRotor;
-    public GameObject xCWRotor;
-    public GameObject xCCWRotor;
-    Vector3 applyPositionPZ;
-    Vector3 applyPositionNZ;
-    Vector3 applyPositionPX;
-    Vector3 applyPositionNX;
+    public GameObject zCCWRotor1;
+    public GameObject zCCWRotor2;
+    public GameObject xCWRotor1;
+    public GameObject xCWRotor2;
 
     Vector3 force;
     Vector3 curPos;
-    Rigidbody rb;
 
     PIDController controller;
 
@@ -27,38 +22,40 @@ public class HeightStabiliser : MonoBehaviour {
     void Start () {
         /* For those with time constraints: */
         Time.timeScale=1f;
-        rb = gameObject.GetComponent<Rigidbody>();
-        applyPositionPZ = zCWRotor.transform.position;
-        applyPositionNZ = zCCWRotor.transform.position;
-        applyPositionPX = xCWRotor.transform.position;
-        applyPositionNZ = xCCWRotor.transform.position;
         transform.position = new Vector3(0f,0.5f,0f);
         force = new Vector3(0f,9.81f/4,0f);
 
         controller = new PIDController(setPoint,pGain,iGain,dGain,force,transform.position);
-        //controller = new PIDController(setPoint,gain,new Vector3(0f,0f,0f));
         controller.updateOutputSignal(transform.position);
     }
     
     // Update is called once per frame
     void FixedUpdate () {
         curPos = transform.position;
-        /* Local position meaning relative to Quadcopter origin.*/
-        applyPositionPZ = zCWRotor.transform.position;
-        applyPositionNZ = zCCWRotor.transform.position;
-        applyPositionPX = xCWRotor.transform.position;
-        applyPositionNX = xCCWRotor.transform.position;
         Vector3 f = controller.updateOutputSignal(curPos);
-        Debug.Log("F: " + f);
-        //Vector3 force = new Vector3(0f,9.81f/4,0f);
-        //Debug.Log("force: " + force);
-        Debug.Log("applyPositionPZ: " + applyPositionPZ);
-        Debug.Log("applyPositionNZ: " + applyPositionNZ);
-        Debug.Log("applyPositionPX: " + applyPositionPX);
-        Debug.Log("applyPositionNX: " + applyPositionNX);
-        rb.AddForceAtPosition(f, curPos+applyPositionPZ, ForceMode.Force); 
-        rb.AddForceAtPosition(f, curPos+applyPositionNZ, ForceMode.Force); 
-        rb.AddForceAtPosition(f, curPos+applyPositionPX, ForceMode.Force); 
-        rb.AddForceAtPosition(f, curPos+applyPositionNX, ForceMode.Force); 
+        if(f.y < 0){
+            zCCWRotor1.GetComponent<Rotor>().setThrottle(f.y);
+        }
+        else{
+            zCCWRotor2.GetComponent<Rotor>().setThrottle(f.y);
+        }
+        if(f.y < 0){
+            zCCWRotor2.GetComponent<Rotor>().setThrottle(f.y);
+        }
+        else{
+            zCCWRotor1.GetComponent<Rotor>().setThrottle(f.y);
+        }
+        if(f.y < 0){
+            xCWRotor1.GetComponent<Rotor>().setThrottle(f.y);
+        }
+        else{
+            xCWRotor2.GetComponent<Rotor>().setThrottle(f.y);
+        }
+        if(f.y < 0){
+            xCWRotor2.GetComponent<Rotor>().setThrottle(f.y);
+        }
+        else{
+            xCWRotor1.GetComponent<Rotor>().setThrottle(f.y);
+        }
     }
 }
