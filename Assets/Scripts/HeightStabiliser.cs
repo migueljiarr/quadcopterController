@@ -8,10 +8,10 @@ public class HeightStabiliser : MonoBehaviour {
     public float iGain;
     public float dGain;
 
-    public GameObject zCWRotor;
-    public GameObject zCCWRotor;
-    public GameObject xCWRotor;
-    public GameObject xCCWRotor;
+    public GameObject zCCWRotor1;
+    public GameObject zCCWRotor2;
+    public GameObject xCWRotor1;
+    public GameObject xCWRotor2;
 
     Vector3 force;
     Vector3 curPos;
@@ -34,28 +34,28 @@ public class HeightStabiliser : MonoBehaviour {
         curPos = transform.position;
         Vector3 f = controller.updateOutputSignal(curPos);
         if(f.y < 0){
-            zCCWRotor.GetComponent<Rotor>().setForce(f);
+            zCCWRotor1.GetComponent<Rotor>().setThrottle(f.y);
         }
         else{
-            zCWRotor.GetComponent<Rotor>().setForce(f);
+            zCCWRotor2.GetComponent<Rotor>().setThrottle(f.y);
         }
         if(f.y < 0){
-            zCWRotor.GetComponent<Rotor>().setForce(f);
+            zCCWRotor2.GetComponent<Rotor>().setThrottle(f.y);
         }
         else{
-            zCCWRotor.GetComponent<Rotor>().setForce(f);
+            zCCWRotor1.GetComponent<Rotor>().setThrottle(f.y);
         }
         if(f.y < 0){
-            xCCWRotor.GetComponent<Rotor>().setForce(f);
+            xCWRotor1.GetComponent<Rotor>().setThrottle(f.y);
         }
         else{
-            xCWRotor.GetComponent<Rotor>().setForce(f);
+            xCWRotor2.GetComponent<Rotor>().setThrottle(f.y);
         }
         if(f.y < 0){
-            xCWRotor.GetComponent<Rotor>().setForce(f);
+            xCWRotor2.GetComponent<Rotor>().setThrottle(f.y);
         }
         else{
-            xCCWRotor.GetComponent<Rotor>().setForce(f);
+            xCWRotor1.GetComponent<Rotor>().setThrottle(f.y);
         }
     }
 }
