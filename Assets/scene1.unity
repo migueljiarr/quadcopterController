@@ -318,7 +318,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ee2a6f59d1054d6c990b3d36b5f44fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotorPos: 1
   maxThrottle: 0
   throttle: 0
 --- !u!1 &1487807481
@@ -412,7 +411,7 @@ GameObject:
   - 33: {fileID: 1640925393}
   - 114: {fileID: 1640925396}
   m_Layer: 0
-  m_Name: ZCCWRotor1
+  m_Name: ZCCWRotor2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -466,7 +465,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 2129460545}
-  m_RootOrder: 0
+  m_RootOrder: 1
 --- !u!114 &1640925396
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -478,7 +477,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ee2a6f59d1054d6c990b3d36b5f44fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotorPos: 3
   maxThrottle: 0
   throttle: 0
 --- !u!1 &1877522527
@@ -625,7 +623,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ee2a6f59d1054d6c990b3d36b5f44fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotorPos: 0
   maxThrottle: 0
   throttle: 0
 --- !u!1 &1919298493
@@ -640,7 +637,7 @@ GameObject:
   - 33: {fileID: 1919298495}
   - 114: {fileID: 1919298497}
   m_Layer: 0
-  m_Name: ZCCWRotor2
+  m_Name: ZCCWRotor1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -658,7 +655,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 2129460545}
-  m_RootOrder: 1
+  m_RootOrder: 0
 --- !u!33 &1919298495
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -706,7 +703,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ee2a6f59d1054d6c990b3d36b5f44fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotorPos: 2
   maxThrottle: 0
   throttle: 0
 --- !u!1 &2129460540
@@ -786,8 +782,8 @@ Transform:
   m_LocalScale: {x: 0.1, y: 0.1, z: 1.1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 1640925395}
   - {fileID: 1919298494}
+  - {fileID: 1640925395}
   m_Father: {fileID: 1877522528}
   m_RootOrder: 1
 --- !u!1 &2145060219

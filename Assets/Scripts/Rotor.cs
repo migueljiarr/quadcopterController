@@ -7,8 +7,8 @@ public class Rotor : MonoBehaviour {
     public const int XCWRotor2 = 1;
     public const int ZCCWRotor1 = 2;
     public const int ZCCWRotor2 = 3;
-    public int rotorPos;
 
+    int rotorId;
     public float maxThrottle;
     public float throttle;
 
@@ -20,18 +20,46 @@ public class Rotor : MonoBehaviour {
         throttle = f;
     }
 
+    public float getThrottle(){
+        return throttle;
+    }
+
+    public void IncreaseThrottle (){
+        if (throttle < 100) {
+            throttle=throttle+0.1f;
+        }
+    }
+    
+    public void DecreaseThrottle (){
+        if (throttle > 0) {
+            throttle=throttle-0.1f;
+        }  
+    }
+
+    public void CutEngine(){
+        throttle = 0;
+    }
+
     void Start(){
         rb = gameObject.transform.root.GetComponent<Rigidbody>();
         maxThrottle = 100;
+        if(gameObject.name=="XCWRotor1")
+            rotorId=0;
+        if(gameObject.name=="XCWRotor2")
+            rotorId=1;
+        if(gameObject.name=="ZCCWRotor1")
+            rotorId=2;
+        if(gameObject.name=="ZCCWRotor2")
+            rotorId=3;
     }
 
-    // Update is called once per frame
     void FixedUpdate () {
         force = transform.up * (maxThrottle * (throttle/100));
-        Debug.Log("Force: " + force + " aka: " + gameObject.name);
-        //rb.AddForceAtPosition(force, curPos, ForceMode.Force); 
         rb.AddForce(force, ForceMode.Force);
-        switch(rotorPos){
+        //Debug.Log("Force: " + force + " aka: " + gameObject.name);
+        //Debug.Debug.DrawRay (transform.position, force, Color.red);
+
+        switch(rotorId){
             case XCWRotor1:
                 torque = transform.forward * -1 * (maxThrottle * (throttle/100));
                 break;
@@ -46,5 +74,6 @@ public class Rotor : MonoBehaviour {
                 break;
         }
         rb.AddForceAtPosition(torque, transform.position, ForceMode.Force);
+        Debug.DrawRay (transform.position, torque, Color.red);
     }
 }
