@@ -13,8 +13,10 @@ Devolver como solución el individuo con mayor calidad de la POBLACION
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using Random=System.Random;
  
-public class GA{
+public class GA:MonoBehaviour{
     public int numGenerations;
     public int numIndividuals;
     public float probMut;
@@ -29,13 +31,15 @@ public class GA{
     private float fitTmp, fitness;
     private Random r;
 
+    /*
     static public void Main (){
 	GA ga = new GA();
 	ga.Start();
     }
+    */
 
     public void Start(){
-        Console.WriteLine ("Starting simulation.");
+        Debug.Log ("Starting simulation.");
 	numIndividuals = 20;
 	numGenerations = 200;
 	probMut = 0.05f;
@@ -51,7 +55,7 @@ public class GA{
 
 	printPop();
 	evolution();
-        Console.WriteLine ("Ending simulation.");
+        Debug.Log ("Ending simulation.");
     }
 
     public void evolution() {
@@ -59,30 +63,30 @@ public class GA{
 	Individual iTmp = null;
 	Individual ind = null;
 	while (generation <= this.numGenerations) {
-	    Console.WriteLine("Generation = " + generation);
+	    Debug.Log("Generation = " + generation);
 	    evaluate(probs,probsSum);
 	    newPop = new List<Individual>(numIndividuals);
 	    for(i=0;i<numIndividuals;i++){
 		//ind = this.select(population,i);
 		ind = this.select(population,probsSum);
 		iTmp = new Individual(ind);
-		//Console.WriteLine("Individual ind: " + ind.toString());
+		//Debug.Log("Individual ind: " + ind.toString());
 		// si <= probMut => operador de variacion: intercambiar
 		if (r.NextDouble() <= probMut)
 		    iTmp.mutar();
-		//Console.WriteLine("Individual iTmp: " + iTmp.toString());
+		//Debug.Log("Individual iTmp: " + iTmp.toString());
 		fitTmp = iTmp.getFitness();
 		fitness= ind.getFitness();
-		//Console.WriteLine("fitTmp: " + fitTmp);
-		//Console.WriteLine("fitness: " + fitness);
+		//Debug.Log("fitTmp: " + fitTmp);
+		//Debug.Log("fitness: " + fitness);
 		if (fitTmp > fitness){
 		    //population[population.IndexOf(ind)] = new Individual(iTmp);
 		    newPop.Add(iTmp);
-		    //Console.WriteLine("improved. fitTmp: " + fitTmp + ", fitness: " + fitness);
+		    //Debug.Log("improved. fitTmp: " + fitTmp + ", fitness: " + fitness);
 		}
 		else{
 		    newPop.Add(ind);
-		    //Console.WriteLine("NOT improved. fitTmp: " + fitTmp + ", fitness: " + fitness);
+		    //Debug.Log("NOT improved. fitTmp: " + fitTmp + ", fitness: " + fitness);
 		}
 	    }
 	    population = newPop;
@@ -99,10 +103,10 @@ public class GA{
 
     public Individual select(List<Individual> pop, List<float> pSum){
 	float s = (float)r.NextDouble();
-	//Console.WriteLine("s: " + s);
+	//Debug.Log("s: " + s);
 	int i=0;
 	while(i<numIndividuals-1){
-	    //Console.WriteLine("pSum["+i+"]: " + pSum[i]);
+	    //Debug.Log("pSum["+i+"]: " + pSum[i]);
 	    if(pSum[i] < s){
 		i++;
 	    }
@@ -110,7 +114,7 @@ public class GA{
 		break;
 	    }
 	}
-	//Console.WriteLine("We choose i: " + i + ", pSum[i]: " + pSum[i]);
+	//Debug.Log("We choose i: " + i + ", pSum[i]: " + pSum[i]);
 	return pop[i];
     }
 
@@ -128,18 +132,18 @@ public class GA{
 	//Calculate probability for each Individual as it's quality divided by the total quality of the population.
 	for(int i=0;i<numIndividuals;i++){
 	    p.Insert(i,(float)fit[i]/total);
-	    //Console.WriteLine("aux: " + aux);
-	    //Console.WriteLine("i: " + i + ", ind: " + population[i].toString() + ", p(i): " + p[i]);
-            //Console.WriteLine(String.Format("  {0:F20}", aux));
-            //Console.WriteLine(String.Format("  {0:F20}", p[i]));
+	    //Debug.Log("aux: " + aux);
+	    //Debug.Log("i: " + i + ", ind: " + population[i].toString() + ", p(i): " + p[i]);
+            //Debug.Log(String.Format("  {0:F20}", aux));
+            //Debug.Log(String.Format("  {0:F20}", p[i]));
 	}
-	//Console.WriteLine("total: " + total);
+	//Debug.Log("total: " + total);
 	
 	total=0;
 	//Calculate acumulated probability for selection.
 	for(int i=0;i<numIndividuals;i++){
 	    total += p[i];
-	    //Console.WriteLine("i: " + i + ", a(i): " + total);
+	    //Debug.Log("i: " + i + ", a(i): " + total);
 	    sum.Insert(i,total);
 	}
     }
@@ -148,7 +152,7 @@ public class GA{
 	int n=0; 
 	foreach (Individual i in population){
 	    n++;
-	    Console.WriteLine ("Individual number: " + n + " " + i.toString());
+	    Debug.Log ("Individual number: " + n + " " + i.toString());
 	}
     }
     
@@ -167,10 +171,10 @@ public class GA{
 	}
 	if(g==199){
 	    this.improved=(total/population.Count())-this.improved;
-	    Console.WriteLine("IMPROVED: " + this.improved);
+	    Debug.Log("IMPROVED: " + this.improved);
 	}
-	Console.WriteLine("Best solution = " + mayor*1000);
-	Console.WriteLine("Population mean = " + (total / population.Count()));
+	Debug.Log("Best solution = " + mayor*1000);
+	Debug.Log("Population mean = " + (total / population.Count()));
     }
 
     public void mostrarResultado(){
@@ -179,20 +183,28 @@ public class GA{
 	float total = 0;
 	int numInd = 0;
 	Individual mejor = null;
-	Console.WriteLine("Final results:");
-	Console.WriteLine("\n===================\n");
-	Console.WriteLine("Final Pop:");
+	Debug.Log("Final results:");
+	Debug.Log("\n===================\n");
+	Debug.Log("Final Pop:");
 	foreach (Individual i in population) {
 		fit = i.getFitness();
-		Console.WriteLine("Individual " + ++numInd + ": " + i.toString() + ", fitness: " + fit);
+		Debug.Log("Individual " + ++numInd + ": " + i.toString() + ", fitness: " + fit);
 		total += fit;
 		if (fit > mayor) {
 			mayor = fit;
 			mejor = i;
 		}
 	}
-	Console.WriteLine("Number of generations: " + this.numGenerations);
-	Console.WriteLine("Best global solution = " + mejor.toString() + ", fitness: " + mejor.getFitness());
-	Console.WriteLine("Last generation mean = " + (total / population.Count()));
+	Debug.Log("Number of generations: " + this.numGenerations);
+	Debug.Log("Best global solution = " + mejor.toString() + ", fitness: " + mejor.getFitness());
+	Debug.Log("Last generation mean = " + (total / population.Count()));
+    }
+
+    public bool getOscillation(Vector3 prevPos, Vector3 curPos, Vector3 targetPos){
+        if(prevPos.magnitude < targetPos.magnitude && curPos.magnitude > targetPos.magnitude)
+            return true;
+        else if(prevPos.magnitude > targetPos.magnitude && curPos.magnitude < targetPos.magnitude)
+            return true;
+        else return false;
     }
 }
