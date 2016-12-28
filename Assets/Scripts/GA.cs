@@ -34,7 +34,7 @@ public class GA:MonoBehaviour{
     public void Start(){
         Debug.Log ("Starting simulation.");
 	numIndividuals = 20;
-	numGenerations = 200;
+	numGenerations = 20;
 	probMut = 0.05f;
 	basicSolution = new Individual();
 	r = new Random();

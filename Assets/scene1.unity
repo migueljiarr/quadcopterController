@@ -489,6 +489,7 @@ GameObject:
   - 4: {fileID: 1877522528}
   - 54: {fileID: 1877522529}
   - 114: {fileID: 1877522530}
+  - 114: {fileID: 1877522531}
   m_Layer: 0
   m_Name: Quadcopter
   m_TagString: Untagged
@@ -545,6 +546,20 @@ MonoBehaviour:
   zCCWRotor2: {fileID: 1919298493}
   xCWRotor1: {fileID: 1890871665}
   xCWRotor2: {fileID: 1003665675}
+--- !u!114 &1877522531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1877522527}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8eaff85ab07ee45fba7935b864f1ab68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numGenerations: 0
+  numIndividuals: 0
+  probMut: 0
 --- !u!1 &1890871665
 GameObject:
   m_ObjectHideFlags: 0
