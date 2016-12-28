@@ -31,13 +31,6 @@ public class GA:MonoBehaviour{
     private float fitTmp, fitness;
     private Random r;
 
-    /*
-    static public void Main (){
-	GA ga = new GA();
-	ga.Start();
-    }
-    */
-
     public void Start(){
         Debug.Log ("Starting simulation.");
 	numIndividuals = 20;
