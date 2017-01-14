@@ -45,12 +45,14 @@ public class FlightController : MonoBehaviour {
         heightController = new PIDController(setPoint.y,pGainH,iGainH,dGainH,forceHeight,transform.position.y);
         heightController.updateOutputSignal(transform.position.y);
 
+/*
         attitudeControllerX = new PIDController(0f,pGainA,iGainA,dGainA,0f,curRot.eulerAngles.x);
         attitudeControllerX.updateOutputSignal(curRot.eulerAngles.x);
         attitudeControllerY = new PIDController(0f,pGainA,iGainA,dGainA,0f,curRot.eulerAngles.y);
         attitudeControllerY.updateOutputSignal(curRot.eulerAngles.y);
         attitudeControllerZ = new PIDController(0f,pGainA,iGainA,dGainA,0f,curRot.eulerAngles.z);
         attitudeControllerZ.updateOutputSignal(curRot.eulerAngles.z);
+*/
         /*
         attitudeControllerX = new PIDController(0f,pGain,iGain,dGain,forceHeight,transform.position.x);
         attitudeControllerX.updateOutputSignal(transform.position.x);
@@ -66,7 +68,7 @@ public class FlightController : MonoBehaviour {
     }
     
     // Update is called once per frame
-    void Update () {
+    void FixedUpdate() {
         HeightStabiliser();
         AttitudeStabiliser();
     }
@@ -74,8 +76,9 @@ public class FlightController : MonoBehaviour {
     Quaternion errorRot, lastError;
     float integralX=0,integralY=0,integralZ=0;
     private void AttitudeStabiliser(){
+        // I calculate the PID values without using PIDController due to it being quaternions.
+        // Thanks to: https://github.com/richardhannah/honours-project/blob/master/AttitudeControl.cs
         curRot = gameObject.GetComponent<RotationSensor>().getRotation();
-        /*
         errorRot = Quaternion.Inverse (curRot) * setRotation;
         
         integralX += errorRot.x * Time.deltaTime;
@@ -87,9 +90,9 @@ public class FlightController : MonoBehaviour {
         float derivZ = (errorRot.z - lastError.z);
         
         lastError = errorRot;
-        float pitchCorrectionX = errorRot.x * pGain + integralX * iGain + derivX * dGain;
-        float pitchCorrectionY = errorRot.y * pGain + integralY * iGain + derivY * dGain;
-        float pitchCorrectionZ = errorRot.z * pGain + integralZ * iGain + derivZ * dGain;
+        float pitchCorrectionX = errorRot.x * pGainA + integralX * iGainA + derivX * dGainA;
+        float pitchCorrectionY = errorRot.y * pGainA + integralY * iGainA + derivY * dGainA;
+        float pitchCorrectionZ = errorRot.z * pGainA + integralZ * iGainA + derivZ * dGainA;
         Debug.Log("pitchCorrectionX: " + pitchCorrectionX);        
         Debug.Log("pitchCorrectionY: " + pitchCorrectionY);        
         Debug.Log("pitchCorrectionZ: " + pitchCorrectionZ);        
@@ -101,23 +104,27 @@ public class FlightController : MonoBehaviour {
         zCCWRotor2.GetComponent<Rotor>().setThrottle(Mathf.Clamp(zCCWRotor2.GetComponent<Rotor>().getThrottle() + pitchCorrectionY, throttleMin, throttleMax));
         xCWRotor1.GetComponent<Rotor>().setThrottle(Mathf.Clamp(xCWRotor1.GetComponent<Rotor>().getThrottle() - pitchCorrectionY, throttleMin, throttleMax));
         xCWRotor2.GetComponent<Rotor>().setThrottle(Mathf.Clamp(xCWRotor2.GetComponent<Rotor>().getThrottle() - pitchCorrectionY, throttleMin, throttleMax));
-        */
         /*
         Debug.Log("rot x: " + curRot.eulerAngles.x);
         Debug.Log("rot y: " + curRot.eulerAngles.y);
         Debug.Log("rot z: " + curRot.eulerAngles.z);
         */
+/*
         Vector3 f = Vector3.zero;
         f.x = attitudeControllerX.updateOutputSignal(curRot.eulerAngles.x);
         f.y = attitudeControllerY.updateOutputSignal(curRot.eulerAngles.y);
         f.z = attitudeControllerZ.updateOutputSignal(curRot.eulerAngles.z);
+*/
+/*
         Debug.Log("att f.x: " + f.x);
         Debug.Log("att f.y: " + f.y);
         Debug.Log("att f.z: " + f.z);
+*/
         /*
         Vector3 f = Vector3.zero;
         f = attitudeController.updateOutputSignal(transform.position);
         */
+/*
         zCCWRotor1.GetComponent<Rotor>().setThrottle(Mathf.Clamp(zCCWRotor1.GetComponent<Rotor>().getThrottle() + f.x, throttleMin, throttleMax));
         zCCWRotor2.GetComponent<Rotor>().setThrottle(Mathf.Clamp(zCCWRotor2.GetComponent<Rotor>().getThrottle() - f.x, throttleMin, throttleMax));
         xCWRotor1.GetComponent<Rotor>().setThrottle(Mathf.Clamp(xCWRotor1.GetComponent<Rotor>().getThrottle() + f.z, throttleMin, throttleMax));
@@ -126,6 +133,7 @@ public class FlightController : MonoBehaviour {
         zCCWRotor2.GetComponent<Rotor>().setThrottle(Mathf.Clamp(zCCWRotor2.GetComponent<Rotor>().getThrottle() + f.y, throttleMin, throttleMax));
         xCWRotor1.GetComponent<Rotor>().setThrottle(Mathf.Clamp(xCWRotor1.GetComponent<Rotor>().getThrottle() - f.y, throttleMin, throttleMax));
         xCWRotor2.GetComponent<Rotor>().setThrottle(Mathf.Clamp(xCWRotor2.GetComponent<Rotor>().getThrottle() - f.y, throttleMin, throttleMax));
+*/
         /*
         zCCWRotor1.GetComponent<Rotor>().setThrottle(Mathf.Clamp(f.x, throttleMin, throttleMax));
         zCCWRotor2.GetComponent<Rotor>().setThrottle(Mathf.Clamp(-f.x, throttleMin, throttleMax));
@@ -171,10 +179,12 @@ public class FlightController : MonoBehaviour {
         float y;
         y = heightController.updateOutputSignal(curPos.y);
         throttleMin = Mathf.Clamp(y,0f,6f);
-        throttleMax = throttleMin + 0f;
+        throttleMax = throttleMin + 1f;
+        /*
         Debug.Log("y: " + y);
         Debug.Log("thMin: " + throttleMin);
         Debug.Log("thMax: " + throttleMax);
+        */
         /*
         curPos = transform.position;
         Vector3 f = Vector3.zero;
