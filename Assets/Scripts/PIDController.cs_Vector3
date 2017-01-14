@@ -2,21 +2,20 @@
 using System.Collections;
 
 public class PIDController{
+    Vector3 controllerBias;
     float controllerPGain; // 20 or 100
     float controllerIGain;
     float controllerDGain; // 30 or 150
+    Vector3 setPoint;
+    Vector3 processVar;
+    Vector3 prevPV;
+    Vector3 errorAcumulator;
+    Vector3 outC;
+    Vector3 outP;
+    Vector3 outI;
+    Vector3 outD;
 
-    float controllerBias;
-    float setPoint;
-    float processVar;
-    float prevPV;
-    float errorAcumulator;
-    float outC;
-    float outP;
-    float outI;
-    float outD;
-
-    public PIDController(float sp, float kp, float ki, float kd, float cbias, float ppv){
+    public PIDController(Vector3 sp, float kp, float ki, float kd, Vector3 cbias, Vector3 ppv){
         setPoint = sp;
         controllerPGain = kp;
         controllerIGain = ki;
@@ -25,20 +24,20 @@ public class PIDController{
         prevPV = ppv;
     }
 
-    float getError(float sp, float pv){
+    Vector3 getError(Vector3 sp, Vector3 pv){
         return sp-pv;
     }
     
-    float getDifferencePV(float prev, float pv){
+    Vector3 getDifferencePV(Vector3 prev, Vector3 pv){
         return prev-pv;
     }
     
-    float getErrAcum(float err){
+    Vector3 getErrAcum(Vector3 err){
         errorAcumulator=errorAcumulator+err*Time.deltaTime;
         return errorAcumulator;
     }
 
-    public float updateOutputSignal(float pv){
+    public Vector3 updateOutputSignal(Vector3 pv){
         //Debug.Log("pRrror: " + getError(setPoint,pv));
         //Debug.Log("difference: " + getDifferencePV(prevPV,pv));
         //Debug.Log("errAcum: " + getErrAcum(getError(prevPV,pv)));

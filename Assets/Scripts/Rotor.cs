@@ -44,20 +44,20 @@ public class Rotor : MonoBehaviour {
         rb = gameObject.transform.root.GetComponent<Rigidbody>();
         maxThrottle = 100;
         if(gameObject.name=="XCWRotor1")
-            rotorId=0;
+            rotorId=XCWRotor1;
         if(gameObject.name=="XCWRotor2")
-            rotorId=1;
+            rotorId=XCWRotor2;
         if(gameObject.name=="ZCCWRotor1")
-            rotorId=2;
+            rotorId=ZCCWRotor1;
         if(gameObject.name=="ZCCWRotor2")
-            rotorId=3;
+            rotorId=ZCCWRotor2;
     }
 
     void FixedUpdate () {
         force = transform.up * (maxThrottle * (throttle/100));
-        rb.AddForce(force, ForceMode.Force);
-        //Debug.Log("Force: " + force + " aka: " + gameObject.name);
-        //Debug.Debug.DrawRay (transform.position, force, Color.red);
+        rb.AddForceAtPosition(force, transform.position, ForceMode.Force);
+        Debug.Log("Force: " + force + " aka: " + gameObject.name);
+        Debug.DrawRay (transform.position, force, Color.red);
 
         switch(rotorId){
             case XCWRotor1:
@@ -74,6 +74,6 @@ public class Rotor : MonoBehaviour {
                 break;
         }
         rb.AddForceAtPosition(torque, transform.position, ForceMode.Force);
-        Debug.DrawRay (transform.position, torque, Color.red);
+        //Debug.DrawRay (transform.position, torque, Color.red);
     }
 }

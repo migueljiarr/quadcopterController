@@ -534,15 +534,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1877522527}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7be5ea18bdb74437dae4407f0fa97c1d, type: 3}
+  m_Script: {fileID: 11500000, guid: ab5a79c19120b4e3b8a66814541b1781, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  setPoint: {x: 0, y: 3, z: 0}
-  pGain: 5
-  iGain: 1
-  dGain: 200
-  zCCWRotor1: {fileID: 1640925392}
-  zCCWRotor2: {fileID: 1919298493}
+  setPoint: {x: 0, y: 10, z: 0}
+  pGain: 1
+  iGain: 0
+  dGain: 20
+  zCCWRotor1: {fileID: 1919298493}
+  zCCWRotor2: {fileID: 1640925392}
   xCWRotor1: {fileID: 1890871665}
   xCWRotor2: {fileID: 1003665675}
 --- !u!1 &1890871665
