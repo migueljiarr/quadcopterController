@@ -78,6 +78,8 @@ public class FlightController : MonoBehaviour {
     private void AttitudeStabiliser(){
         // I calculate the PID values without using PIDController due to it being quaternions.
         // Thanks to: https://github.com/richardhannah/honours-project/blob/master/AttitudeControl.cs
+        //
+        // PROVISIONAL::::: if this doesn't work use tMin=tMax. And something else??
         curRot = gameObject.GetComponent<RotationSensor>().getRotation();
         errorRot = Quaternion.Inverse (curRot) * setRotation;
         
