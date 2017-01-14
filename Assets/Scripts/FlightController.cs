@@ -36,7 +36,7 @@ public class FlightController : MonoBehaviour {
         transform.position = new Vector3(0f,0.5f,0f);
         forceHeight = 9.81f/4f;
 
-        heightController = new PIDController(setPoint.y,pGain,iGain,dGain,0f,transform.position.y);
+        heightController = new PIDController(setPoint.y,pGain,iGain,dGain,forceHeight,transform.position.y);
         heightController.updateOutputSignal(transform.position.y);
 
         attitudeControllerX = new PIDController(0f,pGain,iGain,dGain,forceHeight,transform.position.x);
