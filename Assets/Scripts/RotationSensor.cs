@@ -6,11 +6,11 @@ public class RotationSensor : MonoBehaviour {
     Quaternion currentRotation;
 
     void Start () {
-        currentRotation = this.transform.parent.GetComponent<Rigidbody>().rotation;
+        currentRotation = this.transform.GetComponent<Rigidbody>().rotation;
     }
     
     void Update () {
-        currentRotation = this.transform.parent.GetComponent<Rigidbody>().rotation;
+        currentRotation = this.transform.GetComponent<Rigidbody>().rotation;
     }
 
     public Quaternion getRotation(){
