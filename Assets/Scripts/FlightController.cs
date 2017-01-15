@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class FlightController : MonoBehaviour {
 
@@ -92,9 +93,9 @@ public class FlightController : MonoBehaviour {
         float derivZ = (errorRot.z - lastError.z);
         
         lastError = errorRot;
-        float pitchCorrectionX = errorRot.x * pGainA + integralX * iGainA + derivX * dGainA;
-        float pitchCorrectionY = errorRot.y * pGainA + integralY * iGainA + derivY * dGainA;
-        float pitchCorrectionZ = errorRot.z * pGainA + integralZ * iGainA + derivZ * dGainA;
+        float pitchCorrectionX = (float)Math.Round((double)errorRot.x * pGainA + integralX * iGainA + derivX * dGainA,2);
+        float pitchCorrectionY = (float)Math.Round((double)errorRot.y * pGainA + integralY * iGainA + derivY * dGainA,2);
+        float pitchCorrectionZ = (float)Math.Round((double)errorRot.z * pGainA + integralZ * iGainA + derivZ * dGainA,2);
         Debug.Log("pitchCorrectionX: " + pitchCorrectionX);        
         Debug.Log("pitchCorrectionY: " + pitchCorrectionY);        
         Debug.Log("pitchCorrectionZ: " + pitchCorrectionZ);        
