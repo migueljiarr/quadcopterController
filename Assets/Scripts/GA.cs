@@ -12,6 +12,7 @@ Devolver como solución el individuo con mayor calidad de la POBLACION
 
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 using Random=System.Random;
@@ -20,6 +21,8 @@ public class GA:MonoBehaviour{
     public int numGenerations;
     public int numIndividuals;
     public float probMut;
+    public int simulationTime;
+    public GameObject qC;
     private List<Individual> population;
     private List<Individual> newPop;
     private List<float> probs;
@@ -32,10 +35,11 @@ public class GA:MonoBehaviour{
     private Random r;
 
     public void Start(){
+        initializeEvolution();
+    }
+
+    public void initializeEvolution(){
         Debug.Log ("Starting simulation.");
-	numIndividuals = 20;
-	numGenerations = 20;
-	probMut = 0.05f;
 	basicSolution = new Individual();
 	r = new Random();
 	
@@ -47,11 +51,18 @@ public class GA:MonoBehaviour{
 	probsSum = new List<float>(numIndividuals);
 
 	printPop();
-	evolution();
-        Debug.Log ("Ending simulation.");
+        StartCoroutine(evolution());
     }
 
-    public void evolution() {
+    void startSimulation (){
+        qC.SetActive(true);
+    }
+
+    void stopSimulation (){
+        qC.SetActive(false);
+    }
+
+    IEnumerator evolution() {
 	int generation = 0, i;
 	Individual iTmp = null;
 	Individual ind = null;
@@ -59,8 +70,8 @@ public class GA:MonoBehaviour{
 	    Debug.Log("Generation = " + generation);
 	    evaluate(probs,probsSum);
 	    newPop = new List<Individual>(numIndividuals);
+            startSimulation();
 	    for(i=0;i<numIndividuals;i++){
-		//ind = this.select(population,i);
 		ind = this.select(population,probsSum);
 		iTmp = new Individual(ind);
 		//Debug.Log("Individual ind: " + ind.toString());
@@ -68,6 +79,7 @@ public class GA:MonoBehaviour{
 		if (r.NextDouble() <= probMut)
 		    iTmp.mutar();
 		//Debug.Log("Individual iTmp: " + iTmp.toString());
+                yield return new WaitForSeconds(simulationTime);
 		fitTmp = iTmp.getFitness();
 		fitness= ind.getFitness();
 		//Debug.Log("fitTmp: " + fitTmp);
@@ -82,16 +94,14 @@ public class GA:MonoBehaviour{
 		    //Debug.Log("NOT improved. fitTmp: " + fitTmp + ", fitness: " + fitness);
 		}
 	    }
+            stopSimulation();
 	    population = newPop;
 	    mostrarMejorYMedia(generation);
 	    //printPop();
 	    generation++;
 	}
 	mostrarResultado();
-    }
-
-    public Individual select(List<Individual> pop, int i){
-	return pop[i];
+        Debug.Log ("Ending simulation.");
     }
 
     public Individual select(List<Individual> pop, List<float> pSum){

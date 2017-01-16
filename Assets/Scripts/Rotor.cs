@@ -56,8 +56,10 @@ public class Rotor : MonoBehaviour {
     void FixedUpdate () {
         force = transform.up * (maxThrottle * (throttle/100));
         rb.AddForceAtPosition(force, transform.position, ForceMode.Force);
+        /*
         Debug.Log("Force: " + force + " aka: " + gameObject.name);
         Debug.DrawRay (transform.position, force, Color.red);
+        */
 
         switch(rotorId){
             case XCWRotor1:
