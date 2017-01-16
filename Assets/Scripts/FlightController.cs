@@ -35,16 +35,20 @@ public class FlightController : MonoBehaviour {
     PIDController attitudeController;
     */
 
-    // Use this for initialization
-    void Start () {
-        /* For those with time constraints: */
+    void init(){
         Time.timeScale=1f;
         transform.position = new Vector3(0f,0.5f,0f);
+        transform.rotation = Quaternion.identity;
         forceHeight = 9.81f/4f;
         setRotation = new Quaternion (0, 0, 0, 1);
 
         heightController = new PIDController(setPoint.y,pGainH,iGainH,dGainH,forceHeight,transform.position.y);
         heightController.updateOutputSignal(transform.position.y);
+    }
+
+    // Use this for initialization
+    void Start () {
+        init();
 
 /*
         attitudeControllerX = new PIDController(0f,pGainA,iGainA,dGainA,0f,curRot.eulerAngles.x);
@@ -96,9 +100,11 @@ public class FlightController : MonoBehaviour {
         float pitchCorrectionX = (float)Math.Round((double)errorRot.x * pGainA + integralX * iGainA + derivX * dGainA,2);
         float pitchCorrectionY = (float)Math.Round((double)errorRot.y * pGainA + integralY * iGainA + derivY * dGainA,2);
         float pitchCorrectionZ = (float)Math.Round((double)errorRot.z * pGainA + integralZ * iGainA + derivZ * dGainA,2);
+        /*
         Debug.Log("pitchCorrectionX: " + pitchCorrectionX);        
         Debug.Log("pitchCorrectionY: " + pitchCorrectionY);        
         Debug.Log("pitchCorrectionZ: " + pitchCorrectionZ);        
+        */
         zCCWRotor1.GetComponent<Rotor>().setThrottle(Mathf.Clamp(zCCWRotor1.GetComponent<Rotor>().getThrottle() + pitchCorrectionZ, throttleMin, throttleMax));
         zCCWRotor2.GetComponent<Rotor>().setThrottle(Mathf.Clamp(zCCWRotor2.GetComponent<Rotor>().getThrottle() - pitchCorrectionZ, throttleMin, throttleMax));
         xCWRotor1.GetComponent<Rotor>().setThrottle(Mathf.Clamp(xCWRotor1.GetComponent<Rotor>().getThrottle() + pitchCorrectionX, throttleMin, throttleMax));
