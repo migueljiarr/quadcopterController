@@ -65,7 +65,7 @@ public class FlightController : MonoBehaviour {
         setRotation = new Quaternion (0, 0, 0, 1);
 
         posOscillations = 1;
-        time = Time.time * 1000;
+        time = Time.time * -1000;
 
         heightController = new PIDController(setPoint.y,pGainH,iGainH,dGainH,forceHeight,transform.position.y);
         heightController.updateOutputSignal(transform.position.y);
@@ -116,7 +116,7 @@ public class FlightController : MonoBehaviour {
             posOscillations++;
         }
         if(posOscillations==0 && Mathf.Approximately(curPos.y,3f)){
-            time = Time.time*1000 - time;
+            time = Time.time*1000 + time;
         }
     }
 
@@ -227,6 +227,8 @@ public class FlightController : MonoBehaviour {
     private void HeightStabiliser() {
         prevPos = curPos;
         curPos = transform.position;
+        // Not used due to floor is too small.
+        float height = gameObject.GetComponent<Altimeter>().getHeight();
         float y;
         y = heightController.updateOutputSignal(curPos.y);
         throttleMin = Mathf.Clamp(y,0f,6f);

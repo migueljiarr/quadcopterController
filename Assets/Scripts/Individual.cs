@@ -90,10 +90,10 @@ public class Individual{
 	return this.fitness;
     }
 
-    public void mutar(int i){
+    public void mutar(int i, int maxChange){
 	float c;
 	int s;
-	c=(float)(r.NextDouble()*10000) % 100; // Over 10000, mean 1% increase/decrease.
+	c=(float)(r.NextDouble()*10000) % maxChange;
 	s=r.Next(2);
 	if(s==1)
     	    genome[i] += c;

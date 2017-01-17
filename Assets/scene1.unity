@@ -136,32 +136,32 @@ Prefab:
     - target: {fileID: 114000013490417488, guid: 1ffa1c81fe7784060973c38493caaf00,
         type: 2}
       propertyPath: pGainA
-      value: 165
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114000013490417488, guid: 1ffa1c81fe7784060973c38493caaf00,
         type: 2}
       propertyPath: iGainA
-      value: 1
+      value: 6.622338
       objectReference: {fileID: 0}
     - target: {fileID: 114000013490417488, guid: 1ffa1c81fe7784060973c38493caaf00,
         type: 2}
       propertyPath: dGainA
-      value: 2844
+      value: 9595.96
       objectReference: {fileID: 0}
     - target: {fileID: 114000013490417488, guid: 1ffa1c81fe7784060973c38493caaf00,
         type: 2}
       propertyPath: pGainH
-      value: 1
+      value: 86.55459
       objectReference: {fileID: 0}
     - target: {fileID: 114000013490417488, guid: 1ffa1c81fe7784060973c38493caaf00,
         type: 2}
       propertyPath: dGainH
-      value: 150
+      value: 6787.316
       objectReference: {fileID: 0}
     - target: {fileID: 114000013490417488, guid: 1ffa1c81fe7784060973c38493caaf00,
         type: 2}
       propertyPath: iGainH
-      value: 1
+      value: 10.68095
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1ffa1c81fe7784060973c38493caaf00, type: 2}
@@ -342,7 +342,7 @@ GameObject:
   - 23: {fileID: 1487807482}
   - 114: {fileID: 1487807486}
   m_Layer: 0
-  m_Name: Plane
+  m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -424,6 +424,7 @@ MonoBehaviour:
   numGenerations: 20
   numIndividuals: 10
   probMut: 1
+  maxChange: 100
   simulationTime: 20
   qC: {fileID: 1877522527}
   timeScale: 2

@@ -24,4 +24,9 @@ public class Altimeter : MonoBehaviour {
             //Debug.DrawLine(transform.position, -Vector3.up, Color.red);
         }
     }
+
+    float getHeight(){
+        // Not used at the moment because the floor is not big enough.
+        return altitude;
+    }
 }

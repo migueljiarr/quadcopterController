@@ -23,6 +23,7 @@ public class GA:MonoBehaviour{
     public int numGenerations;
     public int numIndividuals;
     public float probMut;
+    public int maxChange;
     public int simulationTime;
     public GameObject qC;
     public int timeScale;
@@ -95,15 +96,15 @@ public class GA:MonoBehaviour{
 		// si <= probMut => operador de variacion: intercambiar
                 for(int genome=0; genome<6; genome++){
                     if (r.NextDouble() <= probMut)
-		        iTmp.mutar(genome);
+		        iTmp.mutar(genome, maxChange);
                 }
 		Debug.Log("Individual iTmp: " + iTmp.toString());
                 startSimulation(iTmp.getGenome());
-		Debug.Log("waiting for: " + simulationTime/2);
-                yield return new WaitForSeconds(simulationTime/2);
-                qC.gameObject.GetComponent<Rigidbody>().AddTorque(new Vector3(0f,0f,0.1f), ForceMode.Impulse);
-		Debug.Log("waiting for: " + simulationTime/2);
-                yield return new WaitForSeconds(simulationTime/2);
+		Debug.Log("waiting for: " + simulationTime*3/4);
+                yield return new WaitForSeconds(simulationTime*3/4);
+                qC.gameObject.GetComponent<Rigidbody>().AddTorque(new Vector3(0f,0.2f,0f), ForceMode.Impulse);
+		Debug.Log("waiting for: " + simulationTime/4);
+                yield return new WaitForSeconds(simulationTime/4);
                 stopSimulation();
 		fitTmp = this.getFitness();
 		fitness= ind.getFitness();
@@ -225,16 +226,28 @@ public class GA:MonoBehaviour{
         if (qC.gameObject.transform.position.y < 0)
             valid = false;
         if (valid){
-            //f  = 0.2f * (1 / qC.GetComponent<Rigidbody>().velocity.magnitude);
-            /*
+            /* Primera aproximacion: 
+            f  = 0.2f * (1 / qC.GetComponent<Rigidbody>().velocity.magnitude);
+            */
+
+            /* Segunda aproximacion:
             f =  0.2f * (1 / Mathf.Abs(qC.gameObject.transform.position.y - 3));
             f += 0.4f * (1 / qC.GetComponent<Rigidbody>().angularVelocity.magnitude);
             Vector3 aux = new Vector3(0f,3f,0f) - qC.gameObject.transform.position;
             f += 0.4f * (1 / aux.magnitude);
             */
-            f = 0.3f * (1 / qC.GetComponent<FlightController>().time);
-            f += 0.3f * (1 / qC.GetComponent<FlightController>().posOscillations);
-            f += 0.4f * (1 / qC.GetComponent<Rigidbody>().angularVelocity.magnitude);
+
+            // Tercera aproximacion:
+            float aux;
+            f =  0.3f * Mathf.Clamp((1 / qC.GetComponent<FlightController>().time), 0f, 1f);
+	    //Debug.Log("fitness speed: " + f);
+            aux = f;
+            f += 0.2f * Mathf.Clamp((3 / qC.GetComponent<FlightController>().posOscillations), 0f, 1f);
+            f += 0.2f * Mathf.Clamp((0.2f / Mathf.Abs(qC.gameObject.transform.position.y - 3)), 0f, 1f);
+	    //Debug.Log("fitness height stability : " + (f-aux));
+            aux = f;
+            f += 0.3f * Mathf.Clamp((1 / qC.GetComponent<Rigidbody>().angularVelocity.magnitude), 0f, 1f);
+	    //Debug.Log("fitness yaw stability : " + (f-aux));
         }
         else f=-1;
         return f;
