@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 
 public class FlightController : MonoBehaviour {
@@ -22,6 +23,10 @@ public class FlightController : MonoBehaviour {
     Vector3 force;
     Vector3 curPos;
     Quaternion curRot;
+    Vector3 prevPos;
+    Quaternion prevRot;
+    public int posOscillations;
+    public float time;
 
     PIDController heightController;
     PIDController attitudeControllerX;
@@ -35,8 +40,38 @@ public class FlightController : MonoBehaviour {
     PIDController attitudeController;
     */
 
-    void init(){
-        Time.timeScale=1f;
+    public List<float> getPIDvalues(){
+        List<float> l = new List<float>();
+        l.Add(pGainH);
+        l.Add(iGainH);
+        l.Add(dGainH);
+        l.Add(pGainA);
+        l.Add(iGainA);
+        l.Add(dGainA);
+        return l;
+    }
+
+    public void init(float pGH,float iGH,float dGH,float pGA,float iGA,float dGA){
+        // Some know good values: 50, 1, 3000, 10, 0, 300.
+        pGainH = pGH;
+        iGainH = iGH;
+        dGainH = dGH;
+        pGainA = pGA;
+        iGainA = iGA;
+        dGainA = dGA;
+        transform.position = new Vector3(0f,0.5f,0f);
+        transform.rotation = Quaternion.identity;
+        forceHeight = 9.81f/4f;
+        setRotation = new Quaternion (0, 0, 0, 1);
+
+        posOscillations = 1;
+        time = Time.time * 1000;
+
+        heightController = new PIDController(setPoint.y,pGainH,iGainH,dGainH,forceHeight,transform.position.y);
+        heightController.updateOutputSignal(transform.position.y);
+    }
+
+    public void init(){
         transform.position = new Vector3(0f,0.5f,0f);
         transform.rotation = Quaternion.identity;
         forceHeight = 9.81f/4f;
@@ -46,9 +81,10 @@ public class FlightController : MonoBehaviour {
         heightController.updateOutputSignal(transform.position.y);
     }
 
+
     // Use this for initialization
     void Start () {
-        init();
+        //init(0f,0f,0f,0f,0f,0f);
 
 /*
         attitudeControllerX = new PIDController(0f,pGainA,iGainA,dGainA,0f,curRot.eulerAngles.x);
@@ -76,6 +112,12 @@ public class FlightController : MonoBehaviour {
     void FixedUpdate() {
         HeightStabiliser();
         AttitudeStabiliser();
+        if(getPosOscillation(curPos,prevPos,setPoint)){
+            posOscillations++;
+        }
+        if(posOscillations==0 && Mathf.Approximately(curPos.y,3f)){
+            time = Time.time*1000 - time;
+        }
     }
 
     Quaternion errorRot, lastError;
@@ -83,8 +125,7 @@ public class FlightController : MonoBehaviour {
     private void AttitudeStabiliser(){
         // I calculate the PID values without using PIDController due to it being quaternions.
         // Thanks to: https://github.com/richardhannah/honours-project/blob/master/AttitudeControl.cs
-        //
-        // PROVISIONAL::::: if this doesn't work use tMin=tMax. And something else??
+        prevRot = curRot;
         curRot = gameObject.GetComponent<RotationSensor>().getRotation();
         errorRot = Quaternion.Inverse (curRot) * setRotation;
         
@@ -184,6 +225,7 @@ public class FlightController : MonoBehaviour {
     
 
     private void HeightStabiliser() {
+        prevPos = curPos;
         curPos = transform.position;
         float y;
         y = heightController.updateOutputSignal(curPos.y);
@@ -224,4 +266,13 @@ public class FlightController : MonoBehaviour {
         }
         */
     }
+    
+    public bool getPosOscillation(Vector3 prevPos, Vector3 curPos, Vector3 targetPos){
+        if(prevPos.magnitude < targetPos.magnitude && curPos.magnitude > targetPos.magnitude)
+            return true;
+        else if(prevPos.magnitude > targetPos.magnitude && curPos.magnitude < targetPos.magnitude)
+            return true;
+        else return false;
+    }
+
 }

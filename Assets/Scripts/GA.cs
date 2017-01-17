@@ -11,6 +11,7 @@ Devolver como solución el individuo con mayor calidad de la POBLACION
 */
 
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
@@ -18,34 +19,45 @@ using UnityEngine;
 using Random=System.Random;
  
 public class GA:MonoBehaviour{
+    public Boolean simulation;
     public int numGenerations;
     public int numIndividuals;
     public float probMut;
     public int simulationTime;
     public GameObject qC;
+    public int timeScale;
     private List<Individual> population;
     private List<Individual> newPop;
     private List<float> probs;
     private List<float> probsSum;
     private Individual basicSolution;
-
-    private float improved;
+    private Boolean valid;
 
     private float fitTmp, fitness;
     private Random r;
 
     public void Start(){
-        initializeEvolution();
+        Time.timeScale = timeScale;
+        if(simulation == true){
+            initializeEvolution();
+        }
+        else
+            qC.GetComponent<FlightController>().init();
+    }
+
+    public void OnCollisionEnter(Collision c){
+        // Collision, so it is not stable.
+        //valid = false;
     }
 
     public void initializeEvolution(){
         Debug.Log ("Starting simulation.");
-	basicSolution = new Individual();
+	//basicSolution = new Individual();
 	r = new Random();
 	
 	population = new List<Individual>(numIndividuals);
 	for(int i=0;i<numIndividuals;i++){
-	    population.Add(new Individual(basicSolution));
+	    population.Add(new Individual());
 	}
 	probs = new List<float>(numIndividuals);
 	probsSum = new List<float>(numIndividuals);
@@ -54,7 +66,13 @@ public class GA:MonoBehaviour{
         StartCoroutine(evolution());
     }
 
-    void startSimulation (){
+    void startSimulation (List<float> currentGenome){
+        qC.GetComponent<FlightController>().init(currentGenome[0],currentGenome[1],currentGenome[2],currentGenome[3],currentGenome[4],currentGenome[5]);
+        qC.GetComponent<Rigidbody>().velocity = new Vector3(0f,0f,0f);
+        qC.GetComponent<Rigidbody>().angularVelocity = new Vector3(0f,0f,0f);
+        qC.GetComponent<Rigidbody>().ResetInertiaTensor();
+        qC.GetComponent<Rigidbody>().ResetCenterOfMass();
+        valid = true;
         qC.SetActive(true);
     }
 
@@ -70,34 +88,40 @@ public class GA:MonoBehaviour{
 	    Debug.Log("Generation = " + generation);
 	    evaluate(probs,probsSum);
 	    newPop = new List<Individual>(numIndividuals);
-            startSimulation();
 	    for(i=0;i<numIndividuals;i++){
 		ind = this.select(population,probsSum);
 		iTmp = new Individual(ind);
-		//Debug.Log("Individual ind: " + ind.toString());
+		Debug.Log("Individual ind: " + ind.toString());
 		// si <= probMut => operador de variacion: intercambiar
-		if (r.NextDouble() <= probMut)
-		    iTmp.mutar();
-		//Debug.Log("Individual iTmp: " + iTmp.toString());
-                yield return new WaitForSeconds(simulationTime);
-		fitTmp = iTmp.getFitness();
+                for(int genome=0; genome<6; genome++){
+                    if (r.NextDouble() <= probMut)
+		        iTmp.mutar(genome);
+                }
+		Debug.Log("Individual iTmp: " + iTmp.toString());
+                startSimulation(iTmp.getGenome());
+		Debug.Log("waiting for: " + simulationTime/2);
+                yield return new WaitForSeconds(simulationTime/2);
+                qC.gameObject.GetComponent<Rigidbody>().AddTorque(new Vector3(0f,0f,0.1f), ForceMode.Impulse);
+		Debug.Log("waiting for: " + simulationTime/2);
+                yield return new WaitForSeconds(simulationTime/2);
+                stopSimulation();
+		fitTmp = this.getFitness();
 		fitness= ind.getFitness();
-		//Debug.Log("fitTmp: " + fitTmp);
-		//Debug.Log("fitness: " + fitness);
+		Debug.Log("fitTmp: " + fitTmp);
+		Debug.Log("fitness: " + fitness);
 		if (fitTmp > fitness){
-		    //population[population.IndexOf(ind)] = new Individual(iTmp);
+                    iTmp.setFitness(fitTmp);
+                    File.AppendAllText("results.txt",iTmp.toString()+ Environment.NewLine);
 		    newPop.Add(iTmp);
-		    //Debug.Log("improved. fitTmp: " + fitTmp + ", fitness: " + fitness);
 		}
 		else{
+                    File.AppendAllText("results.txt",ind.toString()+ Environment.NewLine);
 		    newPop.Add(ind);
-		    //Debug.Log("NOT improved. fitTmp: " + fitTmp + ", fitness: " + fitness);
 		}
 	    }
-            stopSimulation();
 	    population = newPop;
 	    mostrarMejorYMedia(generation);
-	    //printPop();
+	    printPop();
 	    generation++;
 	}
 	mostrarResultado();
@@ -169,14 +193,7 @@ public class GA:MonoBehaviour{
 	    if (fit > mayor)
 		mayor = fit;
 	}
-	if(g==0){
-	    this.improved=(total/population.Count());
-	}
-	if(g==199){
-	    this.improved=(total/population.Count())-this.improved;
-	    Debug.Log("IMPROVED: " + this.improved);
-	}
-	Debug.Log("Best solution = " + mayor*1000);
+	Debug.Log("Best solution = " + mayor);
 	Debug.Log("Population mean = " + (total / population.Count()));
     }
 
@@ -191,7 +208,7 @@ public class GA:MonoBehaviour{
 	Debug.Log("Final Pop:");
 	foreach (Individual i in population) {
 		fit = i.getFitness();
-		Debug.Log("Individual " + ++numInd + ": " + i.toString() + ", fitness: " + fit);
+		Debug.Log("Individual " + ++numInd + ": " + i.toString());
 		total += fit;
 		if (fit > mayor) {
 			mayor = fit;
@@ -203,11 +220,23 @@ public class GA:MonoBehaviour{
 	Debug.Log("Last generation mean = " + (total / population.Count()));
     }
 
-    public bool getOscillation(Vector3 prevPos, Vector3 curPos, Vector3 targetPos){
-        if(prevPos.magnitude < targetPos.magnitude && curPos.magnitude > targetPos.magnitude)
-            return true;
-        else if(prevPos.magnitude > targetPos.magnitude && curPos.magnitude < targetPos.magnitude)
-            return true;
-        else return false;
+    float getFitness(){
+        float f;
+        if (qC.gameObject.transform.position.y < 0)
+            valid = false;
+        if (valid){
+            //f  = 0.2f * (1 / qC.GetComponent<Rigidbody>().velocity.magnitude);
+            /*
+            f =  0.2f * (1 / Mathf.Abs(qC.gameObject.transform.position.y - 3));
+            f += 0.4f * (1 / qC.GetComponent<Rigidbody>().angularVelocity.magnitude);
+            Vector3 aux = new Vector3(0f,3f,0f) - qC.gameObject.transform.position;
+            f += 0.4f * (1 / aux.magnitude);
+            */
+            f = 0.3f * (1 / qC.GetComponent<FlightController>().time);
+            f += 0.3f * (1 / qC.GetComponent<FlightController>().posOscillations);
+            f += 0.4f * (1 / qC.GetComponent<Rigidbody>().angularVelocity.magnitude);
+        }
+        else f=-1;
+        return f;
     }
 }
